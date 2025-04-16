@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Product Types
+enum ProductType {
+  REINFORCED_DIFFERENTIALS @map("reinforced-differentials")
+  NAFL_BUMPER             @map("nafl-bumper")
+}
+
+// Admin Users
+model Admin {
+  id            Int       @id @default(autoincrement())
+  username      String    @unique
+  email         String    @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  lastLoginAt   DateTime?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Customers
+model Customer {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  firstName     String
+  lastName      String
+  phone         String?
+  orders        Order[]
+  addresses     Address[]
+  support       SupportTicket[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Customer Addresses
+model Address {
+  id          Int       @id @default(autoincrement())
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  customerId  Int
+  type        String    // "shipping" or "billing"
+  street      String
+  city        String
+  state       String
+  postalCode  String
+  country     String
+  isDefault   Boolean   @default(false)
+  orders      Order[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Orders
+model Order {
+  id              Int         @id @default(autoincrement())
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  customerId      Int
+  orderNumber     String      @unique
+  status          String      // "pending", "processing", "shipped", "delivered", "cancelled"
+  items           OrderItem[]
+  subtotal        Float
+  tax             Float
+  shipping        Float
+  total           Float
+  shippingAddress Address     @relation(fields: [addressId], references: [id])
+  addressId       Int
+  trackingNumber  String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// Order Items
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     Int
+  productType String   // "reinforced-differentials" or "nafl-bumper"
+  quantity    Int
+  price       Float    // Price at time of purchase
+  config      Json?    // JSON object of configuration options
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Site Statistics
+model PageView {
+  id        Int      @id @default(autoincrement())
+  path      String
+  userAgent String?
+  ipAddress String?
+  referer   String?
+  timestamp DateTime @default(now())
+}
+
+// Unique Visitors
+model UniqueVisitor {
+  id          Int      @id @default(autoincrement())
+  visitorId   String   // Hash of IP + User Agent
+  weekStart   DateTime // Start of the week (Monday)
+  createdAt   DateTime @default(now())
+
+  @@unique([visitorId, weekStart])
+}
+
+// Site Analytics
+model Analytics {
+  id            Int      @id @default(autoincrement())
+  date          DateTime @unique
+  pageViews     Int      @default(0)
+  uniqueVisitors Int     @default(0)
+  totalOrders   Int      @default(0)
+  revenue       Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Support Tickets
+model SupportTicket {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String
+  subject     String
+  message     String
+  status      String    // "OPEN", "IN_PROGRESS", "RESOLVED"
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  customerId  Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
