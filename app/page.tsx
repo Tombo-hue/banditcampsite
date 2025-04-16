@@ -5,8 +5,16 @@ import Link from 'next/link';
 import ScrollButton from './components/ScrollButton';
 import ContactForm from './components/ContactForm';
 import { useState, useEffect } from 'react';
+import { useIsMobile } from './hooks/useIsMobile';
+import MobileHome from './components/MobileHome';
 
 export default function Home() {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return <MobileHome />;
+  }
+
   return (
     <main className="min-h-screen bg-[#0A0A0A] relative overflow-hidden">
       {/* Remove padding for full-width hero */}
