@@ -310,7 +310,7 @@ export default function Home() {
                 </div>
                 <div className="relative h-[400px] rounded-lg overflow-hidden group">
                   <Image
-                    src="/uploads/products/diff2.jpg"
+                    src="/uploads/products/diff2.jpg?v=2"
                     alt="Reinforced MX-5 Differential - Side View"
                     fill
                     className="object-cover transform transition-transform duration-500 group-hover:scale-105"

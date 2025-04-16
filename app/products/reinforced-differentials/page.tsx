@@ -32,7 +32,7 @@ export default function ReinforcedDifferentialsPage() {
 
   // This will be populated with the actual images from the directory
   const images = Array.from({ length: 12 }, (_, i) => ({
-    src: `/products/reinforced-differentials/images/diff${i + 1}.jpg`,
+    src: `/products/reinforced-differentials/images/diff${i + 1}.jpg?v=2`,
     alt: `Reinforced Differential Image ${i + 1}`,
   }));
 

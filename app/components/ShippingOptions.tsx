@@ -55,7 +55,7 @@ export function ShippingOptions({ selected, onSelect, postalCode }: ShippingOpti
     {
       id: 'standard',
       name: 'Standard Delivery',
-      description: 'Delivery to your address (95p per mile)',
+      description: 'Delivery to your address (60p per mile)',
       price: 0,
       estimatedDays: '3-5 business days',
       icon: Truck
