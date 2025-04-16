@@ -1,43 +1,43 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import ScrollButton from './components/ScrollButton';
 import ContactForm from './components/ContactForm';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#0A0A0A] relative overflow-hidden">
-      {/* Add padding to account for fixed header */}
-      <div className="pt-20">
-        {/* Hero section */}
-        <div id="hero" className="relative h-screen">
-          {/* Background overlay for moody effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/40 z-10" />
+      {/* Remove padding for full-width hero */}
+      <div>
+        {/* Hero section - adjust height and remove container constraints */}
+        <div id="hero" className="relative h-[100vh] w-full">
+          {/* Darker overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-10" />
           
-          {/* Hero content */}
-          <div className="relative z-20 container mx-auto px-4 h-full flex flex-col items-center justify-center">
-            {/* Hero image */}
-            <div className="absolute inset-0 w-full h-full">
+          {/* Hero content - remove container constraints */}
+          <div className="relative z-20 h-full flex flex-col items-center justify-center">
+            {/* Hero image carousel - make it fill the viewport */}
+            <div className="absolute inset-0">
+              <HeroCarousel />
             </div>
 
-            {/* Content overlay */}
-            <div className="relative z-30 text-center space-y-6">
-              {/* Brand name */}
-              <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight">
+            {/* Content overlay - adjust positioning and spacing */}
+            <div className="relative z-30 text-center space-y-8 px-4 max-w-7xl mx-auto">
+              {/* Brand name - adjust size and add text shadow */}
+              <h1 className="text-7xl md:text-9xl font-bold text-white tracking-tight drop-shadow-2xl">
                 THE BANDIT CAMP
               </h1>
 
-              {/* Slogan */}
-              <p className="text-xl md:text-2xl text-gray-300 font-light max-w-2xl mx-auto">
+              {/* Slogan - adjust size and add text shadow */}
+              <p className="text-2xl md:text-3xl text-gray-200 font-light max-w-3xl mx-auto drop-shadow-lg">
                 For Track Kings, Garage Queens, Street Bandits and Daily Drivers
               </p>
-
-              {/* Decorative elements */}
-              <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-blue-500/30 blur-xl" />
-              <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-500/20 blur-xl" />
             </div>
 
-            {/* UI elements inspired by gauge clusters */}
-            <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-8">
+            {/* UI elements - adjust positioning */}
+            <div className="absolute bottom-12 left-0 right-0 flex justify-center space-x-8">
               <div className="w-2 h-2 rounded-full bg-blue-500/50" />
               <div className="w-2 h-2 rounded-full bg-blue-500/30" />
               <div className="w-2 h-2 rounded-full bg-blue-500/20" />
@@ -615,5 +615,62 @@ export default function Home() {
         </footer>
       </div>
     </main>
+  );
+}
+
+// Update HeroCarousel component
+function HeroCarousel() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [
+    '/uploads/hero/hero1.png',
+    '/uploads/hero/hero2.png',
+    '/uploads/hero/hero3.png'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative w-full h-full">
+      {images.map((src, index) => (
+        <div
+          key={src}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <Image
+            src={src}
+            alt={`Hero image ${index + 1}`}
+            fill
+            priority={index === 0}
+            className="object-cover w-full h-full"
+            sizes="100vw"
+            quality={90}
+          />
+        </div>
+      ))}
+      
+      {/* Carousel indicators - adjust positioning and style */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentImageIndex(index)}
+            className={`w-4 h-4 rounded-full transition-all duration-300 ${
+              index === currentImageIndex
+                ? 'bg-blue-500 scale-110'
+                : 'bg-white/50 hover:bg-white/75'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
