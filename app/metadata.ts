@@ -44,6 +44,11 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "YOUR_GOOGLE_VERIFICATION_CODE", // Replace this with your actual Google verification code
+    // TODO: Add your Google Search Console verification code here
+    // 1. Go to Google Search Console (https://search.google.com/search-console)
+    // 2. Add your property and choose "HTML tag" verification
+    // 3. Copy the content value from the meta tag provided (looks like: <meta name="google-site-verification" content="YOUR_CODE">)
+    // 4. Replace the placeholder below with your actual verification code
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "YOUR_GOOGLE_VERIFICATION_CODE",
   },
 }; 
