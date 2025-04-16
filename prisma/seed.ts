@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 async function main() {
   try {
     // Create admin user
-    const adminPassword = await hash('admin123', 12);
+    const adminPassword = await hash('fxkBfxdnRkeFv2', 12);
     const admin = await prisma.admin.upsert({
       where: { email: 'admin@banditcamp.co.uk' },
       update: {},
